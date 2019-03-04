@@ -3,129 +3,123 @@
 <?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml" vgap="10" hgap="10">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.chart.LineChart?>
+
+<?import javafx.scene.chart.NumberAxis?>
+<GridPane hgap="10" stylesheets="@../css/PanelPi.css" vgap="10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <padding>
-        <Insets left="10" right="10" top="10" bottom="10"/>
+        <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
 
-    <TitledPane text="Heaters" collapsible="false" alignment="BASELINE_CENTER">
-        <GridPane hgap="15" vgap="10">
-            <Label GridPane.columnIndex="2" GridPane.halignment="CENTER" styleClass="bold">Tool</Label>
-            <Label GridPane.columnIndex="1" GridPane.halignment="CENTER" styleClass="bold">Bed</Label>
-            <Label GridPane.rowIndex="1" GridPane.halignment="RIGHT" styleClass="bold">Current</Label>
-            <Label GridPane.rowIndex="2" GridPane.halignment="RIGHT" styleClass="bold">Active</Label>
-            <Label GridPane.rowIndex="3" GridPane.halignment="RIGHT" styleClass="bold">Standby</Label>
-
-            <Label fx:id="toolTemp" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.halignment="CENTER">0°C
-            </Label>
-            <Label fx:id="bedTemp" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="CENTER">0°C
-            </Label>
-
-            <ComboBox fx:id="bedActiveTemp" GridPane.columnIndex="1" GridPane.rowIndex="2"
-                      GridPane.halignment="CENTER"/>
-            <ComboBox fx:id="toolActiveTemp" GridPane.columnIndex="2" GridPane.rowIndex="2"
-                      GridPane.halignment="CENTER"/>
-            <ComboBox fx:id="toolStandbyTemp" GridPane.columnIndex="2" GridPane.rowIndex="3"
-                      GridPane.halignment="CENTER"/>
+    <TitledPane alignment="BASELINE_CENTER" collapsible="false" text="Heaters">
+        <GridPane hgap="10" vgap="10">
+            <Label styleClass="bold" GridPane.columnIndex="2" GridPane.halignment="CENTER">Ext</Label>
+            <Label styleClass="bold" GridPane.columnIndex="1" GridPane.halignment="CENTER">Bed</Label>
+            <Label GridPane.halignment="RIGHT" GridPane.rowIndex="1">Current</Label>
+            <Label GridPane.halignment="RIGHT" GridPane.rowIndex="2">Active</Label>
+            <Label GridPane.halignment="RIGHT" GridPane.rowIndex="3">Standby</Label>
+            <Label fx:id="toolTemp" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">0°C</Label>
+            <Label fx:id="bedTemp" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">0°C</Label>
+            <ComboBox fx:id="bedActiveTemp" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <ComboBox fx:id="toolActiveTemp" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <ComboBox fx:id="toolStandbyTemp" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <LineChart GridPane.columnIndex="3" GridPane.rowSpan="4" fx:id="temperatureHistogram" prefWidth="100" id="TemperatureHistogram">
+                <xAxis><NumberAxis/></xAxis>
+                <yAxis><NumberAxis/></yAxis>
+            </LineChart>
         </GridPane>
     </TitledPane>
 
-    <TitledPane text="Head Movement" collapsible="false" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"
-                alignment="BASELINE_CENTER">
-        <GridPane vgap="10" hgap="10">
-            <Button fx:id="homeX" GridPane.rowIndex="0" styleClass="warning">Home X</Button>
-            <Button fx:id="homeY" GridPane.rowIndex="1" styleClass="warning">Home Y</Button>
-            <Button fx:id="homeZ" GridPane.rowIndex="2" styleClass="warning">Home Z</Button>
+    <TitledPane alignment="BASELINE_CENTER" collapsible="false" text="Head Movement" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+        <GridPane hgap="10" vgap="10">
+            <Button fx:id="homeX" styleClass="warning" GridPane.rowIndex="0">Home X</Button>
+            <Button fx:id="homeY" styleClass="warning" GridPane.rowIndex="1">Home Y</Button>
+            <Button fx:id="homeZ" styleClass="warning" GridPane.rowIndex="2">Home Z</Button>
 
-            <Button fx:id="xLeft" GridPane.columnIndex="1">
+            <Button GridPane.columnIndex="1" fx:id="xLeft">
                 <graphic>
-                    <FontAwesomeIconView glyphName="ARROW_LEFT"/>
+                    <FontAwesomeIconView glyphName="ARROW_LEFT" />
                 </graphic>
             </Button>
-            <ComboBox fx:id="xAmount" GridPane.columnIndex="2"/>
-            <Button fx:id="xRight" GridPane.columnIndex="3">
+            <ComboBox GridPane.columnIndex="2" fx:id="xAmount" />
+            <Button GridPane.columnIndex="3" fx:id="xRight">
                 <graphic>
-                    <FontAwesomeIconView glyphName="ARROW_RIGHT"/>
+                    <FontAwesomeIconView glyphName="ARROW_RIGHT" />
                 </graphic>
             </Button>
 
             <Button fx:id="yLeft" GridPane.columnIndex="1" GridPane.rowIndex="1">
                 <graphic>
-                    <FontAwesomeIconView glyphName="ARROW_LEFT"/>
+                    <FontAwesomeIconView glyphName="ARROW_LEFT" />
                 </graphic>
             </Button>
-            <ComboBox fx:id="yAmount" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <ComboBox fx:id="yAmount" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Button fx:id="yRight" GridPane.columnIndex="3" GridPane.rowIndex="1">
                 <graphic>
-                    <FontAwesomeIconView glyphName="ARROW_RIGHT"/>
+                    <FontAwesomeIconView glyphName="ARROW_RIGHT" />
                 </graphic>
             </Button>
 
 
             <Button fx:id="zLeft" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <graphic>
-                    <FontAwesomeIconView glyphName="ARROW_LEFT"/>
+                    <FontAwesomeIconView glyphName="ARROW_LEFT" />
                 </graphic>
             </Button>
-            <ComboBox fx:id="zAmount" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            <ComboBox fx:id="zAmount" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Button fx:id="zRight" GridPane.columnIndex="3" GridPane.rowIndex="2">
                 <graphic>
-                    <FontAwesomeIconView glyphName="ARROW_RIGHT"/>
+                    <FontAwesomeIconView glyphName="ARROW_RIGHT" />
                 </graphic>
             </Button>
 
-            <Label fx:id="xCoord" GridPane.columnIndex="4" maxWidth="Infinity"/>
-            <Label fx:id="yCoord" GridPane.columnIndex="4" GridPane.rowIndex="1" maxWidth="Infinity"/>
-            <Label fx:id="zCoord" GridPane.columnIndex="4" GridPane.rowIndex="2" maxWidth="Infinity"/>
+            <Label fx:id="xCoord" maxWidth="Infinity" GridPane.columnIndex="4" />
+            <Label fx:id="yCoord" maxWidth="Infinity" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <Label fx:id="zCoord" maxWidth="Infinity" GridPane.columnIndex="4" GridPane.rowIndex="2" />
 
 
-            <Button fx:id="homeAll" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5"
-                    GridPane.halignment="RIGHT">
+            <Button fx:id="homeAll" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5" GridPane.halignment="RIGHT">
                 <graphic>
-                    <MaterialDesignIconView glyphName="HOME_VARIANT"/>
+                    <MaterialDesignIconView glyphName="HOME_VARIANT" />
                 </graphic>
             </Button>
-            <Button fx:id="bedComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5"
-                    GridPane.rowIndex="1"
-                    GridPane.halignment="RIGHT">
+            <Button fx:id="bedComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                 <graphic>
-                    <MaterialDesignIconView glyphName="VECTOR_SQUARE"/>
+                    <MaterialDesignIconView glyphName="VECTOR_SQUARE" />
                 </graphic>
             </Button>
-            <Button fx:id="gridComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5"
-                    GridPane.rowIndex="2"
-                    GridPane.hgrow="ALWAYS"
-                    GridPane.fillWidth="true" GridPane.halignment="RIGHT">
+            <Button fx:id="gridComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5" GridPane.fillWidth="true" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
                 <graphic>
-                    <MaterialDesignIconView glyphName="GRID"/>
+                    <MaterialDesignIconView glyphName="GRID" />
                 </graphic>
             </Button>
-
         </GridPane>
     </TitledPane>
 
-    <TitledPane text="Extruder" collapsible="false" GridPane.columnIndex="1" GridPane.valignment="TOP"
-                alignment="BASELINE_CENTER">
+    <TitledPane alignment="BASELINE_CENTER" collapsible="false" text="Extruder" GridPane.columnIndex="1" GridPane.valignment="TOP">
         <GridPane hgap="10" vgap="10">
             <Label GridPane.halignment="RIGHT">Feed Amount :</Label>
-            <ComboBox fx:id="feedAmountCB" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS"
-                      maxWidth="Infinity"/>
-            <Label GridPane.rowIndex="1" GridPane.halignment="RIGHT">Feed Rate :</Label>
-            <ComboBox fx:id="feedRateCB" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity"/>
-            <HBox GridPane.rowIndex="3" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.halignment="CENTER"
-                  alignment="CENTER">
+            <ComboBox fx:id="feedAmountCB" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.fillWidth="true" GridPane.hgrow="ALWAYS" />
+            <Label GridPane.halignment="RIGHT" GridPane.rowIndex="1">Feed Rate :</Label>
+            <ComboBox fx:id="feedRateCB" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
                 <Button fx:id="retract" styleClass="extrude-retract, normal">
                     <graphic>
-                        <FontAwesomeIconView glyphName="ARROW_UP"/>
+                        <FontAwesomeIconView glyphName="ARROW_UP" />
                     </graphic>
                     Retract
                 </Button>
                 <Button fx:id="extrude" styleClass="extrude-retract, primary">
                     <graphic>
-                        <FontAwesomeIconView glyphName="ARROW_DOWN"/>
+                        <FontAwesomeIconView glyphName="ARROW_DOWN" />
                     </graphic>
                     Extrude
                 </Button>
@@ -133,20 +127,15 @@
         </GridPane>
     </TitledPane>
 
-    <TitledPane text="Miscellaneous" collapsible="false" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                GridPane.valignment="TOP" alignment="BASELINE_CENTER">
-        <GridPane vgap="20" hgap="10">
-            <Label GridPane.halignment="RIGHT">ATX Power :</Label>
-            <HBox GridPane.columnIndex="1">
-                <ToggleButton fx:id="onButton" GridPane.columnIndex="1" styleClass="on-off-button, success"
-                              focusTraversable="false">On
-                </ToggleButton>
-                <ToggleButton fx:id="offButton" GridPane.columnIndex="2" styleClass="on-off-button, danger"
-                              focusTraversable="false">Off
-                </ToggleButton>
+    <TitledPane alignment="BASELINE_CENTER" collapsible="false" text="Miscellaneous" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
+        <GridPane hgap="10" vgap="20">
+            <Label GridPane.halignment="RIGHT">Fan :</Label>
+            <VBox fx:id="fanSliderBox" alignment="CENTER" GridPane.columnIndex="1"/>
+            <Label style="visibility:hidden" GridPane.halignment="RIGHT" GridPane.rowIndex="1">ATX Power :</Label>
+            <HBox style="visibility:hidden" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <ToggleButton fx:id="onButton" focusTraversable="false" styleClass="on-off-button, success" GridPane.columnIndex="1">On</ToggleButton>
+                <ToggleButton fx:id="offButton" focusTraversable="false" styleClass="on-off-button, danger" GridPane.columnIndex="2">Off</ToggleButton>
             </HBox>
-            <Label GridPane.rowIndex="1" GridPane.halignment="RIGHT">Fan :</Label>
-            <VBox fx:id="fanSliderBox" GridPane.rowIndex="1" GridPane.columnIndex="1" alignment="CENTER"/>
         </GridPane>
     </TitledPane>
 </GridPane>

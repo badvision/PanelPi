@@ -1,13 +1,19 @@
-.root {
+/*.root {
     -fx-body-color : #F5F5F5;
     -fx-outer-border : #cecece;
 }
+*/
+.root {
+    -fx-body-color : midtone; /* inside of inactive dropdowns */
+    -fx-outer-border : bg1-lighter; /* not sure where this is ever used */
+}
+
 .button:focused, .toggle-button:focused,
 .split-menu-button:focused, .menu-button:focused,
 .number-button:focused,
 .combo-box:focused .text-field, .choice-box:focused, .color-picker:focused, .date-picker:focused .text-field
 {
-    -fx-effect: dropshadow(gaussian, #b4d1f3, 3, 3, 0, 0);
+    -fx-effect: dropshadow(gaussian, bg1, 3, 3, 0, 0);
 }
 .combo-box:focused * {
     -fx-effect: none;
@@ -56,15 +62,16 @@
 .info .arrow,
 .warning .arrow,
 .danger .arrow {
-    -fx-background-color: transparent, white;
+    -fx-background-color: transparent, text;
 }
 
+.normal,
 .primary > .label,
 .success > .label,
 .info > .label,
 .warning > .label,
 .danger > .label {
-    -fx-text-fill: white;
+    -fx-text-fill: text;
 }
 
 .action-btn {
@@ -155,15 +162,19 @@ VBox > .split-menu-button.last > .arrow-button {
 .number-button,.left-arrow-button,.right-arrow-button,
 .button,.split-menu-button,.toggle-button,.menu-button,
 .font-menu-button, .split-menu-button > .label, .split-menu-button > .arrow-button {
-    -fx-background-color: white;
+/*    -fx-background-color: white;*/
+    -fx-background-color: midtone; /* Color of most buttons */
 }
 
 .color-picker,.date-picker > .arrow-button,
 .button,.menu-button,.toggle-button,.number-button,.left-arrow-button,.right-arrow-button,
-.font-menu-button,
-.split-menu-button > .label,.split-menu-button > .arrow-button {
+.font-menu-button, .split-menu-button > .label,.split-menu-button > .arrow-button {
+/*
     -fx-border-color: #cccccc;
     -fx-text-fill: #333333;
+*/
+    -fx-border-color: midtone-darker;
+    -fx-text-fill: text;
 }
 /*just for the special split menu button*/
 .split-menu-button > .label {
@@ -184,8 +195,12 @@ VBox > .split-menu-button.last > .arrow-button {
 .button:hover,.menu-button:hover,.toggle-button:hover,
 .font-menu-button:hover,
 .split-menu-button > .label:hover, .split-menu-button > .arrow-button:hover {
+/*
     -fx-background-color: #e6e6e6;
     -fx-border-color: #acacac;
+*/
+    -fx-background-color: midtone-lighter;
+    -fx-border-color: bright;
 }
 /*pressed selected*/
 .color-picker:pressed,.color-picker:selected,
@@ -199,9 +214,9 @@ VBox > .split-menu-button.last > .arrow-button {
 .button:pressed, .button:selected,.menu-button:pressed,.menu-button:selected
 ,.toggle-button:pressed,.toggle-button:selected,
 .split-menu-button:pressed > .label, .split-menu-button > .arrow-button:pressed {
-    -fx-background-color: #e6e6e6;
-    -fx-border-color: #acacac;
-    -fx-effect: innershadow(gaussian, #adadad, 10, 0, 0, 3);
+    -fx-background-color: bright;
+    -fx-border-color: bright-darker;
+    -fx-effect: innershadow(gaussian, highlight, 10, 0, 0, 3);
 }
 
 /*primary*/
@@ -432,7 +447,8 @@ VBox > .split-menu-button.last > .arrow-button {
 }
 
 .tab-pane .tab-header-background {
-    -fx-background-color: #f4f4f4;
+/*    -fx-background-color: #f4f4f4;*/
+-fx-background-color: red;
 }
 .tab-pane.plain .tab-header-background {
     -fx-background-color: transparent;
@@ -587,7 +603,7 @@ VBox > .split-menu-button.last > .arrow-button {
 }
 
 .color-palette {
-    -fx-background-color: white;
+    -fx-background-color: white; /* No idea where this is used */
 }
 
 .pagination > .pagination-control > .control-box {

@@ -87,7 +87,7 @@ class DuetController : Controller() {
                 extruderValues.forEach { it.xValue = it.xValue.toInt() - 1 }
                 val x = bedValues.last().xValue.toInt() + 1
                 bedValues.add(XYChart.Data(x, bedTemp))
-                extruderValues.add(XYChart.Data(x, extTemp/2))
+                extruderValues.add(XYChart.Data(x, extTemp))
                 bedValues.remove(0, 1)
                 extruderValues.remove(0, 1)
             }

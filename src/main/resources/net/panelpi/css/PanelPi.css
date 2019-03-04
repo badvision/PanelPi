@@ -1,12 +1,100 @@
+/** Color palette
+    Based on : https://coolors.co/00171f-4c4c47-003459-4d7ea8-f9dc5c
+**/
+.root {
+    bg1: #00171f;
+    bg1-lighter: #172c33;
+    bg1-darker: #00131a;
+    /*
+    bg2: #32021f;
+    bg2-lighter: #441933;
+    bg2-darker: #29021a;
+    */
+    bg2: #4c4c47;
+    bg2-lighter: #5c5c57;
+    bg2-darker: #3f3f3b;
+    midtone: #003459;
+    midtone-lighter: #174668;
+    midtone-darker: #002b49;
+    bright: #4d7ea8;
+    bright-lighter: #6d95b7;
+    bright-darker: #40688a0a0a0;
+    highlight: #f9dc5c;
+    highlight-lighter: #fae279;
+    highlight-darker: #e3c854;
+    text-darker:#a0a0a0;
+    text: white;
+}
+
 * {
     -fx-focus-traversable: false;
+}
+
+.window {
+    -fx-background-color : bg1
+}
+
+.contentArea {
+    -fx-background-color : bg1-darker
+}
+
+.label {
+    -fx-text-fill: text;
+}
+
+.titled-pane  {
+    -fx-text-fill: highlight;
+    -fx-box-border: bg2;
+}
+
+.titled-pane:focused  {
+    -fx-text-fill: text;
+}
+
+.titled-pane > .title {
+    -fx-background-color: bg2
+}
+
+.titled-pane:focused > .title  {
+    -fx-color: highlight-lighter;
+}
+
+.titled-pane > *.content  {
+    -fx-box-border:bg1-lighter;
+    -fx-background-color:bg2-darker;
+    -fx-text-fill:text;
+ }
+
+#TemperatureHistogram .chart-plot-background {
+    -fx-background-color: midtone;
+}
+
+#TemperatureHistogram .chart-vertical-grid-lines,
+ #TemperatureHistogram .chart-horizontal-grid-lines {
+    -fx-stroke: midtone-lighter;
+}
+
+#TemperatureHistogram .chart-alternative-row-fill {
+    -fx-fill: midtone-darker;
+    -fx-stroke: transparent;
+    -fx-stroke-width: 0;
+ }
+
+.bedTemps.chart-series-line {
+    -fx-stroke: #000080;
+    -fx-stroke-type: centered;
+}
+
+.extruderTemps.chart-series-line {
+    -fx-stroke: #ff0000;
+    -fx-stroke-type: centered;
 }
 
 .printerStatus.label {
     -fx-label-padding: 2 10 2 10;
     -fx-background-radius: 5;
-    -fx-text-fill: white;
-    -fx-background-color: silver;
+    -fx-text-fill: text;
+    -fx-background-color: midtone;
 }
 
 .tab-pane .tab-header-area .tab-header-background {
@@ -15,22 +103,22 @@
 
 .menu-icon {
     -fx-padding: 10 10 10 10;
-    -fx-background-color: #f4f4f4;
+    -fx-background-color: bg1;
 }
 
 .menu-icon-selected {
-    -fx-background-color: #428bca;
+    -fx-background-color: highlight;
 }
 
 .menu-icon > .glyph-icon {
-    -fx-text-fill: #428bca;
-    -fx-fill: #428bca;
+    -fx-text-fill: bg2-lighter;
+    -fx-fill: bg2-lighter;
     -glyph-size: 35px;
 }
 
 .menu-icon-selected > .glyph-icon {
-    -fx-text-fill: white;
-    -fx-fill: white;
+    -fx-text-fill: bg1-lighter;
+    -fx-fill: bg1-lighter;
     -glyph-size: 35px;
 }
 
@@ -39,18 +127,18 @@
 }
 
 .machine-name {
-    -fx-text-fill: silver;
+    -fx-text-fill: highlight-lighter;
     -fx-font-size: 20;
 }
 
 .menu {
-    -fx-border-color: silver;
+    -fx-border-color: bg1-lighter;
     -fx-border-width: 0 0 1 0;
 }
 
 .emergency-button > .glyph-icon {
     -glyph-size: 20px;
-    -fx-fill: white;
+    -fx-fill: text;
 }
 
 .on-off-button {
@@ -84,14 +172,20 @@
     -fx-pref-width: 110;
 }
 
+.button > .glyph-icon,
+.normal > .glyph-icon {
+    -fx-text-fill: text-darker;
+    -fx-fill: text-darker;
+}
+
 .primary > .glyph-icon {
-    -fx-text-fill: white;
-    -fx-fill: white;
+    -fx-text-fill: text;
+    -fx-fill: text;
 }
 
 .large-icon > .glyph-icon {
     -glyph-size: 30px;
-    -fx-fill: white;
+    -fx-fill: text;
 }
 
 .small-button.button {
@@ -100,7 +194,7 @@
 
 .bold.label {
     -fx-font-weight: bolder;
-    -fx-text-fill: #428bca;
+    -fx-text-fill: highlight;
     -fx-font-size: 15;
 }
 
@@ -117,7 +211,7 @@
 }
 
 .data-grid Line {
-    -fx-stroke: lightgray;
+    -fx-stroke: midtone;
 }
 
 .button {
