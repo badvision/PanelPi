@@ -108,8 +108,8 @@ class UsbDuetIO : DuetIO() {
         var sleep = 0
         var avail:Int
         while (!(buffer.endsWith("\n") || buffer == "ACK") && sleep < resultTimeout) {
-            avail = port.inputStream.read(txBuffer)
-            if (avail > 0) {
+            if (port.inputStream.available() > 0) {
+                avail = port.inputStream.read(txBuffer)
                 buffer += String(txBuffer, 0, avail)
             } else {
                 Thread.sleep(100)

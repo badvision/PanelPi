@@ -1,6 +1,8 @@
 package net.panelpi.views
 
 import javafx.scene.Parent
+import javafx.scene.chart.LineChart
+import javafx.scene.chart.XYChart.Series
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.input.MouseButton
@@ -14,7 +16,7 @@ class MainView : View() {
     override val root: Parent by fxml()
     private val duetController: DuetController by inject()
 
-    private val duetData = duetController.data
+    private val duetData = duetController.duetData
     private val status: Label by fxid()
     private val centerPane: BorderPane by fxid()
     private val printerName: Label by fxid()
@@ -32,6 +34,7 @@ class MainView : View() {
     private val settingView: SettingView by inject()
     private val consoleView: ConsoleView by inject()
     private val fileView: FileView by inject()
+
 
     init {
         // Status icon

@@ -25,7 +25,7 @@ class StatusView : View() {
     override val root: Parent by fxml()
     private val duetController: DuetController by inject()
 
-    private val duetData = duetController.data
+    private val duetData = duetController.duetData
     private val currentFile = duetController.currentFile
 
     private val progressBar: ProgressBar by fxid()

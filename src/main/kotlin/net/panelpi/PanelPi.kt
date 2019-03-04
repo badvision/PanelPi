@@ -20,8 +20,13 @@ class PanelPiApp : App(MainView::class) {
     }
 
     override fun start(stage: Stage) {
-        stage.initStyle(StageStyle.UNDECORATED)
-        super.start(stage)
-        stage.onHiding = EventHandler { duetController.halt() }
+        try {
+            stage.initStyle(StageStyle.UNDECORATED)
+            super.start(stage)
+            stage.onHiding = EventHandler { duetController.halt() }
+        } catch (ex: Throwable) {
+            logger.error(ex) { "Error initializing application."}
+            duetController.halt()
+        }
     }
 }

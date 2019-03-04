@@ -4,6 +4,8 @@ import javafx.beans.value.ObservableValue
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Parent
+import javafx.scene.chart.LineChart
+import javafx.scene.chart.XYChart
 import javafx.scene.control.*
 import javafx.scene.layout.VBox
 import net.panelpi.controllers.DuetController
@@ -15,7 +17,7 @@ class ControlView : View() {
     override val root: Parent by fxml()
 
     private val duetController: DuetController by inject()
-    private val duetData = duetController.data
+    private val duetData = duetController.duetData
 
     private val homeX: Button by fxid()
     private val homeY: Button by fxid()
@@ -43,6 +45,7 @@ class ControlView : View() {
 
     private val toolTemp: Label by fxid()
     private val bedTemp: Label by fxid()
+    private val temperatureHistogram: LineChart<Number, Number> by fxid()
 
     private val xCoord: Label by fxid()
     private val yCoord: Label by fxid()
@@ -115,6 +118,25 @@ class ControlView : View() {
 
         bedTemp.bind(duetData.map { it.temps.bed.let { "${it.current}°C" } })
         toolTemp.bind(duetData.map { it.temps.current.let { "${it.firstOrNull()}°C" } })
+
+        val bedHistory: XYChart.Series<Number, Number> = XYChart.Series()
+        bedHistory.name = "Bed"
+        bedHistory.data = duetController.bedValues
+
+        val extruderHistory: XYChart.Series<Number, Number> = XYChart.Series()
+        extruderHistory.name = "Ext"
+        extruderHistory.data = duetController.extruderValues
+
+        temperatureHistogram.data.add(bedHistory)
+        temperatureHistogram.data.add(extruderHistory)
+
+        temperatureHistogram.createSymbols = false
+        temperatureHistogram.yAxis.animated = false
+        temperatureHistogram.xAxis.animated = true
+        temperatureHistogram.xAxis.isTickLabelsVisible = false
+
+        bedHistory.node.styleClass.add("bedTemps")
+        extruderHistory.node.styleClass.add("extruderTemps")
 
         xCoord.bind(duetData.map { "${it.axes["X"]?.coord}" })
         yCoord.bind(duetData.map { "${it.axes["Y"]?.coord}" })

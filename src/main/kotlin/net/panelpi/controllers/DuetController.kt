@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.scene.chart.XYChart
+import tornadofx.*
 import mu.KLogging
 import net.panelpi.duetwifi.DuetWifi
 import net.panelpi.map
@@ -12,7 +14,6 @@ import net.panelpi.models.*
 import net.panelpi.parseAs
 import net.panelpi.plus
 import net.panelpi.toJson
-import tornadofx.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import javax.json.JsonObject
@@ -24,6 +25,9 @@ class DuetController : Controller() {
         private const val ACK = "M118 P2 S\"ACK\""
     }
 
+    val extruderValues: ObservableList<XYChart.Data<Number, Number>> = FXCollections.observableArrayList()
+    val bedValues: ObservableList<XYChart.Data<Number, Number>> = FXCollections.observableArrayList()
+
     var isHalted = false
 
     private val duet = DuetWifi()
@@ -31,19 +35,23 @@ class DuetController : Controller() {
     //private val duetDataMessage = observableList(JsonObject.EMPTY_JSON_OBJECT)
     private val jsonDuetData = SimpleObjectProperty(JsonObject.EMPTY_JSON_OBJECT)
 
-    val data: ObservableValue<DuetData> = jsonDuetData.map { it.parseAs() ?: DuetData() }
+    val duetData: ObservableValue<DuetData> = jsonDuetData.map { it.parseAs() ?: DuetData() }
     private val _sdData = SimpleObjectProperty<SDFolder>(SDFolder("gcodes", emptyList()))
     val sdData: ObservableValue<SDFolder> = _sdData
 
     private val _currentFile = SimpleObjectProperty<SDFile>()
     val currentFile: ObservableValue<SDFile?> = _currentFile
 
-    private val statusObservable = data.map { it.status }
+    private val statusObservable = duetData.map { it.status }
 
     val console: ObservableList<ConsoleMessage> = FXCollections.observableArrayList<ConsoleMessage>()
 
     init {
         runAsync {
+            (0..24).forEach{
+                bedValues.add(XYChart.Data(it, 25.0))
+                extruderValues.add(XYChart.Data(it, 25.0))
+            }
             val status = duet.sendCmd("M408 S3", resultTimeout = 5000).toJson()
             console.add(0, ConsoleMessage(MessageType.INFO, message = "Connection established!"))
             Pair(status, getFile())
@@ -65,6 +73,23 @@ class DuetController : Controller() {
                 }
             } catch (e: Throwable) {
                 logger.debug(e) { "Ignoring error on update thread" }
+            }
+        }
+
+        timer(initialDelay = 1000, period = 2000) {
+            if (isHalted) {
+                cancel()
+            }
+            runLater {
+                val bedTemp = duetData.value.temps.bed.current
+                val extTemp = duetData.value.temps.current[0]
+                bedValues.forEach { it.xValue = it.xValue.toInt() - 1 }
+                extruderValues.forEach { it.xValue = it.xValue.toInt() - 1 }
+                val x = bedValues.last().xValue.toInt() + 1
+                bedValues.add(XYChart.Data(x, bedTemp))
+                extruderValues.add(XYChart.Data(x, extTemp/2))
+                bedValues.remove(0, 1)
+                extruderValues.remove(0, 1)
             }
         }
 
@@ -112,7 +137,7 @@ class DuetController : Controller() {
     }
 
     fun atxPower(on: Boolean = true) {
-        if (data.value.params.atxPower != on) {
+        if (duetData.value.params.atxPower != on) {
             sendCmd(if (on) "M80" else "M81")
         }
     }
