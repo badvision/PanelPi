@@ -1,9 +1,12 @@
 package net.panelpi.duetwifi
 
+import com.fazecast.jSerialComm.SerialPortDataListener
+import com.fazecast.jSerialComm.SerialPortEvent
 import com.pi4j.io.serial.*
 import mu.KLogging
 import net.panelpi.*
 import net.panelpi.models.DuetData
+import java.nio.charset.Charset
 
 fun main(args: Array<String>) {
     val v = "{\"status\":\"I\",\"coords\":{\"axesHomed\":[1,1,1],\"xyz\":[150.000,150.000,5.000],\"machine\":[150.000\u0000,150.005.000],\"extr\":[0.0]},\"currentTool\":0,\"params\":{\"atxPower\":1,\"fanPercent\":[0,100,100,0,0,0,0,0,0],\"speedFactor\":100.0,\"extrFactors\":[100.0],\"babystep\":0.000},\"sensors\":{\"probeValue\":0,\"fanRPM\":0},\"temps\":{\"bed\":{\"current\":27.2,\"active\":0.0,\"state\":0,\"heater\":1},\"current\":[27.1,27.2,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0],\"state\":[2,0,0,0,0,0,0,0],\"heads\":{\"current\":[],\"active\":[],\"standby\":[],\"state\":[]},\"tools\":{\"active\":[[0.0]],\"standby\":[[0.0]]},\"extra\":[{\"name\":\"MCU\",\"temp\":35.4}]},\"time\":1955.0,\"currentLayer\":0,\"currentLayerTime\":0.0,\"extrRaw\":[0.0],\"fractionPrinted\":0.0,\"firstLayerDuration\":0.0,\"firstLayerHeight\":0.00,\"printDuration\":0.0,\"warmUpDuration\":0.0,\"timesLeft\":{\"file\":0.0,\"filament\":0.0,\"layer\":0.0},\"seq\":1,\"resp\":\"\"}"
@@ -26,14 +29,23 @@ class DuetWifi {
         return try {
             RaspPiDuetIO()
         } catch (e: Throwable) {
-            logger.info { "Cannot create RaspberryPi serial IO, running in dev mode." }
-            DevDuetIO()
+            try {
+                UsbDuetIO()
+            } catch (e: Throwable) {
+                logger.info { "Cannot create RaspberryPi serial IO, running in dev mode." }
+                DevDuetIO()
+            }
         }
+    }
+
+    fun halt() {
+        serial.exclusive { this.halt() }
     }
 }
 
 sealed class DuetIO {
     abstract fun sendCmd(vararg lines: String, resultTimeout: Long): String
+    abstract fun halt()
 }
 
 class RaspPiDuetIO : DuetIO() {
@@ -52,6 +64,10 @@ class RaspPiDuetIO : DuetIO() {
         })
     }
 
+    override fun halt() {
+        serial.close()
+    }
+
     override fun sendCmd(vararg lines: String, resultTimeout: Long): String {
         responseBuffer = ""
         lines.forEach { serial.writeln(it.appendCheckSum()) }
@@ -61,6 +77,47 @@ class RaspPiDuetIO : DuetIO() {
             sleep += 100
         }
         return responseBuffer.split("\n").lastOrNull { it.isNotBlank() } ?: ""
+    }
+}
+
+class UsbDuetIO : DuetIO() {
+    var port: com.fazecast.jSerialComm.SerialPort
+
+    init {
+        port = com.fazecast.jSerialComm.SerialPort.getCommPorts()[0]
+        port.baudRate = 57600
+        port.parity = com.fazecast.jSerialComm.SerialPort.NO_PARITY
+        port.setFlowControl(com.fazecast.jSerialComm.SerialPort.FLOW_CONTROL_DISABLED)
+        port.numDataBits = 8
+        port.numStopBits = 1
+        port.openPort()
+    }
+
+    override fun halt() {
+        port.closePort()
+    }
+
+    val txBuffer = ByteArray(256)
+
+    override fun sendCmd(vararg lines: String, resultTimeout: Long): String {
+        var buffer = ""
+//        lines.forEach(System.out::println)
+        lines.forEach {
+                port.outputStream.write((it.appendCheckSum() + "\n").toByteArray(Charset.forName("US-ASCII")))
+        }
+        var sleep = 0
+        var avail:Int
+        while (!(buffer.endsWith("\n") || buffer == "ACK") && sleep < resultTimeout) {
+            avail = port.inputStream.read(txBuffer)
+            if (avail > 0) {
+                buffer += String(txBuffer, 0, avail)
+            } else {
+                Thread.sleep(100)
+                sleep += 100
+            }
+        }
+//        System.out.println(">>>$buffer")
+        return buffer.split("\n").lastOrNull { it.isNotBlank() } ?: ""
     }
 }
 
@@ -112,5 +169,9 @@ class DevDuetIO : DuetIO() {
             }
             else -> ""
         }
+    }
+
+    override fun halt() {
+        logger.debug("Serial halted")
     }
 }

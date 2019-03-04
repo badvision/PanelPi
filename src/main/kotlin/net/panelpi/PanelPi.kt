@@ -1,5 +1,6 @@
 package net.panelpi
 
+import javafx.event.EventHandler
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import mu.KLogging
@@ -21,5 +22,6 @@ class PanelPiApp : App(MainView::class) {
     override fun start(stage: Stage) {
         stage.initStyle(StageStyle.UNDECORATED)
         super.start(stage)
+        stage.onHiding = EventHandler { duetController.halt() }
     }
 }

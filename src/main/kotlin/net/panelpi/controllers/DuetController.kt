@@ -1,5 +1,6 @@
 package net.panelpi.controllers
 
+import javafx.application.Platform
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
@@ -22,6 +23,8 @@ class DuetController : Controller() {
         // Hack to get duet to send back ack after long running moves (e.g grid compensation) completed.
         private const val ACK = "M118 P2 S\"ACK\""
     }
+
+    var isHalted = false
 
     private val duet = DuetWifi()
 
@@ -52,6 +55,9 @@ class DuetController : Controller() {
         refreshSDData()
 
         timer(initialDelay = 1000, period = 500) {
+            if (isHalted) {
+                cancel()
+            }
             try {
                 val data = duet.sendCmd("M408 S4", resultTimeout = 5000).toJson()
                 runLater {
@@ -65,6 +71,12 @@ class DuetController : Controller() {
         statusObservable.onChange {
             if (it == Status.P) runAsync { getFile() }.ui { _currentFile.set(it) }
         }
+    }
+
+    fun halt() {
+        isHalted = true
+        duet.halt()
+        Platform.runLater{System.exit(1)}
     }
 
     fun sendCmd(vararg cmd: String, resultTimeout: Long = 0): String {

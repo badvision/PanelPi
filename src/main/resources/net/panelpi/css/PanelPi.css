@@ -131,7 +131,7 @@
 
 .popupPane {
     -fx-padding: 5 5 5 5;
-    -fx-border-color: lightgray;
+    -fx-border-color: 'lightgray';
     -fx-background-color: #f4f4f4;
 }
 

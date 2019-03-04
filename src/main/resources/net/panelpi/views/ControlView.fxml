@@ -30,15 +30,6 @@
                       GridPane.halignment="CENTER"/>
             <ComboBox fx:id="toolStandbyTemp" GridPane.columnIndex="2" GridPane.rowIndex="3"
                       GridPane.halignment="CENTER"/>
-
-            <HBox GridPane.rowIndex="5" GridPane.columnSpan="3" spacing="10" alignment="CENTER_LEFT">
-                <Label styleClass="bold, red">X</Label>
-                <Label fx:id="xCoord"/>
-                <Label styleClass="bold, green">Y</Label>
-                <Label fx:id="yCoord"/>
-                <Label styleClass="bold, blue">Z</Label>
-                <Label fx:id="zCoord"/>
-            </HBox>
         </GridPane>
     </TitledPane>
 
@@ -66,7 +57,7 @@
                     <FontAwesomeIconView glyphName="ARROW_LEFT"/>
                 </graphic>
             </Button>
-            <ComboBox fx:id="yAmount" GridPane.columnIndex="2" GridPane.rowIndex="1" maxWidth="Infinity"/>
+            <ComboBox fx:id="yAmount" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
             <Button fx:id="yRight" GridPane.columnIndex="3" GridPane.rowIndex="1">
                 <graphic>
                     <FontAwesomeIconView glyphName="ARROW_RIGHT"/>
@@ -79,27 +70,32 @@
                     <FontAwesomeIconView glyphName="ARROW_LEFT"/>
                 </graphic>
             </Button>
-            <ComboBox fx:id="zAmount" GridPane.columnIndex="2" GridPane.rowIndex="2" maxWidth="Infinity"/>
+            <ComboBox fx:id="zAmount" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
             <Button fx:id="zRight" GridPane.columnIndex="3" GridPane.rowIndex="2">
                 <graphic>
                     <FontAwesomeIconView glyphName="ARROW_RIGHT"/>
                 </graphic>
             </Button>
 
-            <Button fx:id="homeAll" styleClass="primary, large-icon, small-button" GridPane.columnIndex="4"
+            <Label fx:id="xCoord" GridPane.columnIndex="4" maxWidth="Infinity"/>
+            <Label fx:id="yCoord" GridPane.columnIndex="4" GridPane.rowIndex="1" maxWidth="Infinity"/>
+            <Label fx:id="zCoord" GridPane.columnIndex="4" GridPane.rowIndex="2" maxWidth="Infinity"/>
+
+
+            <Button fx:id="homeAll" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5"
                     GridPane.halignment="RIGHT">
                 <graphic>
                     <MaterialDesignIconView glyphName="HOME_VARIANT"/>
                 </graphic>
             </Button>
-            <Button fx:id="bedComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="4"
+            <Button fx:id="bedComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5"
                     GridPane.rowIndex="1"
                     GridPane.halignment="RIGHT">
                 <graphic>
                     <MaterialDesignIconView glyphName="VECTOR_SQUARE"/>
                 </graphic>
             </Button>
-            <Button fx:id="gridComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="4"
+            <Button fx:id="gridComp" styleClass="primary, large-icon, small-button" GridPane.columnIndex="5"
                     GridPane.rowIndex="2"
                     GridPane.hgrow="ALWAYS"
                     GridPane.fillWidth="true" GridPane.halignment="RIGHT">
