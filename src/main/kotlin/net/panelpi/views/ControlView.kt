@@ -5,6 +5,7 @@ import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Parent
 import javafx.scene.chart.LineChart
+import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.scene.control.*
 import javafx.scene.layout.VBox
@@ -117,7 +118,7 @@ class ControlView : View() {
         }
 
         bedTemp.bind(duetData.map { it.temps.bed.let { "${it.current}°C" } })
-        toolTemp.bind(duetData.map { it.temps.current.let { "${it.firstOrNull()}°C" } })
+        toolTemp.bind(duetData.map { it.temps.current.let { "${it.getOrNull(1)}°C" } })
 
         val bedHistory: XYChart.Series<Number, Number> = XYChart.Series()
         bedHistory.name = "Bed"
@@ -131,9 +132,13 @@ class ControlView : View() {
         temperatureHistogram.data.add(extruderHistory)
 
         temperatureHistogram.createSymbols = false
+        val yAxis: NumberAxis = temperatureHistogram.yAxis as NumberAxis
+
         temperatureHistogram.yAxis.animated = false
         temperatureHistogram.xAxis.animated = true
         temperatureHistogram.xAxis.isTickLabelsVisible = false
+
+        duetController.lowestTemperature.addListener { observable, oldValue, newValue ->  yAxis.isForceZeroInRange = false; yAxis.lowerBoundProperty().unbind(); yAxis.lowerBound = newValue.toDouble()}
 
         bedHistory.node.styleClass.add("bedTemps")
         extruderHistory.node.styleClass.add("extruderTemps")

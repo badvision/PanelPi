@@ -18,7 +18,7 @@
     midtone-darker: #002b49;
     bright: #4d7ea8;
     bright-lighter: #6d95b7;
-    bright-darker: #40688a0a0a0;
+    bright-darker: #40688a;
     highlight: #f9dc5c;
     highlight-lighter: #fae279;
     highlight-darker: #e3c854;
@@ -41,6 +41,58 @@
 .label {
     -fx-text-fill: text;
 }
+
+.slider .axis-minor-tick-mark {
+    -fx-stroke: bg2-lighter;
+}
+
+.slider {
+    -fx-control-inner-background: midtone;
+}
+
+.slider .track {
+    -fx-border-color: midtone-darker;
+    -fx-border-radius: 3;
+    -fx-border-stroke: 2;
+}
+
+.slider .axis-tick-mark {
+    -fx-stroke: text-darker;
+}
+
+.slider .axis {
+    -fx-tick-label-fill: text-darker;
+}
+
+
+.check-box .text {
+    -fx-fill: text
+}
+
+.combo-box {
+    -fx-min-height: 36px;
+}
+
+.combo-box-base {
+    -fx-outer-border: bg1-darker;
+    -fx-shadow-highlight-color: bg1-lighter;
+    -fx-border-color: bg2-lighter;
+    -fx-text-fill: text;
+}
+
+.combo-box > .list-cell {
+    -fx-background-color: midtone;
+    -fx-background-radius: 5 0 0 5;
+    -fx-text-fill: text;
+    -fx-border-color: bg2-lighter midtone bg2-lighter bg2-lighter;
+    -fx-border-width: 1 0 1 1;
+    -fx-border-radius: 5 0 0 5;
+ }
+
+ .combo-box .combo-box-popup {
+    -fx-background-color: midtone-darker;
+    -fx-text-fill: text;
+ }
 
 .titled-pane  {
     -fx-text-fill: highlight;
@@ -69,6 +121,10 @@
     -fx-background-color: midtone;
 }
 
+#TemperatureHistogram .axis {
+    -fx-tick-label-fill: text-darker;
+}
+
 #TemperatureHistogram .chart-vertical-grid-lines,
  #TemperatureHistogram .chart-horizontal-grid-lines {
     -fx-stroke: midtone-lighter;
@@ -81,12 +137,12 @@
  }
 
 .bedTemps.chart-series-line {
-    -fx-stroke: #000080;
+    -fx-stroke: bright;
     -fx-stroke-type: centered;
 }
 
 .extruderTemps.chart-series-line {
-    -fx-stroke: #ff0000;
+    -fx-stroke: highlight;
     -fx-stroke-type: centered;
 }
 

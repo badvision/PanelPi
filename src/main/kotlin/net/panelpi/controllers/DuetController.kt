@@ -1,6 +1,7 @@
 package net.panelpi.controllers
 
 import javafx.application.Platform
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
@@ -27,6 +28,7 @@ class DuetController : Controller() {
 
     val extruderValues: ObservableList<XYChart.Data<Number, Number>> = FXCollections.observableArrayList()
     val bedValues: ObservableList<XYChart.Data<Number, Number>> = FXCollections.observableArrayList()
+    val lowestTemperature = SimpleDoubleProperty(0.0)
 
     var isHalted = false
 
@@ -48,7 +50,7 @@ class DuetController : Controller() {
 
     init {
         runAsync {
-            (0..24).forEach{
+            (0..25).forEach{
                 bedValues.add(XYChart.Data(it, 25.0))
                 extruderValues.add(XYChart.Data(it, 25.0))
             }
@@ -81,10 +83,17 @@ class DuetController : Controller() {
                 cancel()
             }
             runLater {
+                if (duetData.value.temps.current.isEmpty()) {
+                    return@runLater
+                }
                 val bedTemp = duetData.value.temps.bed.current
-                val extTemp = duetData.value.temps.current[0]
+                val extTemp = duetData.value.temps.current[1]
                 bedValues.forEach { it.xValue = it.xValue.toInt() - 1 }
                 extruderValues.forEach { it.xValue = it.xValue.toInt() - 1 }
+                var min = 2000
+                bedValues.forEach{ min = Math.min(min, it.yValue.toInt()) }
+                extruderValues.forEach{ min = Math.min(min, it.yValue.toInt()) }
+                lowestTemperature.set(min.toDouble())
                 val x = bedValues.last().xValue.toInt() + 1
                 bedValues.add(XYChart.Data(x, bedTemp))
                 extruderValues.add(XYChart.Data(x, extTemp))

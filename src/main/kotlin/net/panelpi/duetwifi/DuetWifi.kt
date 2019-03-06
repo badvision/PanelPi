@@ -6,6 +6,7 @@ import com.pi4j.io.serial.*
 import mu.KLogging
 import net.panelpi.*
 import net.panelpi.models.DuetData
+import java.io.File
 import java.nio.charset.Charset
 
 fun main(args: Array<String>) {
@@ -27,14 +28,23 @@ class DuetWifi {
 
     private fun getSerialIO(): DuetIO {
         return try {
-            RaspPiDuetIO()
-        } catch (e: Throwable) {
-            try {
+            if (isRpi()) {
+                RaspPiDuetIO()
+            } else {
                 UsbDuetIO()
-            } catch (e: Throwable) {
-                logger.info { "Cannot create RaspberryPi serial IO, running in dev mode." }
-                DevDuetIO()
             }
+        } catch (e: Throwable) {
+            logger.info { "Cannot create RaspberryPi serial IO, running in dev mode." }
+            DevDuetIO()
+        }
+    }
+
+    fun isRpi():Boolean {
+        val cpuinfo = File("/proc/cpuinfo")
+        return if (!cpuinfo.exists()) {
+            false
+        } else {
+            cpuinfo.readText(Charsets.UTF_8).contains("ARMv7")
         }
     }
 
