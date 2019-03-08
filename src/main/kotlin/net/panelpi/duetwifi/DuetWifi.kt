@@ -6,8 +6,13 @@ import com.pi4j.io.serial.*
 import mu.KLogging
 import net.panelpi.*
 import net.panelpi.models.DuetData
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
+import java.io.Reader
+import java.net.Socket
 import java.nio.charset.Charset
+import java.util.regex.Pattern
 
 fun main(args: Array<String>) {
     val v = "{\"status\":\"I\",\"coords\":{\"axesHomed\":[1,1,1],\"xyz\":[150.000,150.000,5.000],\"machine\":[150.000\u0000,150.005.000],\"extr\":[0.0]},\"currentTool\":0,\"params\":{\"atxPower\":1,\"fanPercent\":[0,100,100,0,0,0,0,0,0],\"speedFactor\":100.0,\"extrFactors\":[100.0],\"babystep\":0.000},\"sensors\":{\"probeValue\":0,\"fanRPM\":0},\"temps\":{\"bed\":{\"current\":27.2,\"active\":0.0,\"state\":0,\"heater\":1},\"current\":[27.1,27.2,2000.0,2000.0,2000.0,2000.0,2000.0,2000.0],\"state\":[2,0,0,0,0,0,0,0],\"heads\":{\"current\":[],\"active\":[],\"standby\":[],\"state\":[]},\"tools\":{\"active\":[[0.0]],\"standby\":[[0.0]]},\"extra\":[{\"name\":\"MCU\",\"temp\":35.4}]},\"time\":1955.0,\"currentLayer\":0,\"currentLayerTime\":0.0,\"extrRaw\":[0.0],\"fractionPrinted\":0.0,\"firstLayerDuration\":0.0,\"firstLayerHeight\":0.00,\"printDuration\":0.0,\"warmUpDuration\":0.0,\"timesLeft\":{\"file\":0.0,\"filament\":0.0,\"layer\":0.0},\"seq\":1,\"resp\":\"\"}"
@@ -31,7 +36,8 @@ class DuetWifi {
             if (isRpi()) {
                 RaspPiDuetIO()
             } else {
-                UsbDuetIO()
+                TelnetDuetIO()
+                // UsbDuetIO()
             }
         } catch (e: Throwable) {
             logger.info { "Cannot create RaspberryPi serial IO, running in dev mode." }
@@ -107,11 +113,10 @@ class UsbDuetIO : DuetIO() {
         port.closePort()
     }
 
-    val txBuffer = ByteArray(256)
+    private val txBuffer = ByteArray(256)
 
     override fun sendCmd(vararg lines: String, resultTimeout: Long): String {
         var buffer = ""
-//        lines.forEach(System.out::println)
         lines.forEach {
                 port.outputStream.write((it.appendCheckSum() + "\n").toByteArray(Charset.forName("US-ASCII")))
         }
@@ -126,8 +131,48 @@ class UsbDuetIO : DuetIO() {
                 sleep += 100
             }
         }
-//        System.out.println(">>>$buffer")
         return buffer.split("\n").lastOrNull { it.isNotBlank() } ?: ""
+    }
+}
+
+class TelnetDuetIO : DuetIO() {
+    private var socket: Socket
+    private var reader: BufferedReader
+
+    init {
+        System.out.println("trying to connect...")
+        socket = Socket("192.168.1.69", 23)
+        reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+        System.out.println("connected...")
+    }
+
+    override fun halt() {
+        socket.close()
+    }
+
+    override fun sendCmd(vararg lines: String, resultTimeout: Long): String {
+        var buffer = ""
+        lines.forEach {
+            socket.outputStream.write("$it\n".toByteArray(Charset.forName("US-ASCII")))
+//            System.out.println(">>$it")
+            socket.outputStream.flush()
+        }
+
+        var wait = resultTimeout
+        while (buffer == "ok" || buffer.contains("Begin file list") || buffer.contains("End file list") || buffer.isEmpty()) {
+            while (!reader.ready() && wait > 0) {
+                Thread.sleep(100)
+                wait -= 100
+            }
+            if (wait <= 0) {
+//        System.out.println("Response timeout")
+                return ""
+            } else {
+                buffer = reader.readLine()
+            }
+        }
+//        System.out.println("<<$buffer")
+        return buffer
     }
 }
 
