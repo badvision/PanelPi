@@ -64,6 +64,8 @@ class MainView : View() {
             }
         }
 
+        fileButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {duetController.refreshSDData()}
+
         // Select control view by default.
         runLater {
             controlButton.fireEvent(MouseEvent(MouseEvent.MOUSE_CLICKED, 0.0, 0.0, 0.0, 0.0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, true, false, false, null))
