@@ -64,6 +64,7 @@ class MainView : View() {
             }
         }
 
+        controlButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {duetController.refreshMacros()}
         fileButton.addEventHandler(MouseEvent.MOUSE_CLICKED) {duetController.refreshSDData()}
 
         // Select control view by default.

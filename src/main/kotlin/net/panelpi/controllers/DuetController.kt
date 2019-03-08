@@ -47,13 +47,14 @@ class DuetController : Controller() {
     private val statusObservable = duetData.map { it.status }
 
     val console: ObservableList<ConsoleMessage> = FXCollections.observableArrayList<ConsoleMessage>()
+    val macros: ObservableList<String> = FXCollections.observableArrayList<String>()
 
     init {
+        (0..25).forEach{
+            bedValues.add(XYChart.Data(it, 25.0))
+            extruderValues.add(XYChart.Data(it, 25.0))
+        }
         runAsync {
-            (0..25).forEach{
-                bedValues.add(XYChart.Data(it, 25.0))
-                extruderValues.add(XYChart.Data(it, 25.0))
-            }
             val status = duet.sendCmd("M408 S3", resultTimeout = 5000).toJson()
             console.add(0, ConsoleMessage(MessageType.INFO, message = "Connection established!"))
             Pair(status, getFile())
@@ -63,6 +64,7 @@ class DuetController : Controller() {
         }
 
         refreshSDData()
+        refreshMacros()
 
         timer(initialDelay = 1000, period = 500) {
             if (isHalted) {
@@ -215,10 +217,21 @@ class DuetController : Controller() {
         }
     }
 
+    fun refreshMacros() {
+        runAsync {
+            val files = duet.sendCmd("M20 S2 P/macros", resultTimeout = 5000).toJson()?.parseAs<JsonSDFolder>()?.files?.sorted()
+            macros.setAll(files)
+        }
+    }
+
     fun refreshSDData(func: () -> Unit = {}) {
         runAsync { getSdData() }.ui {
             it?.let { _sdData.set(it) }
             func()
         }
+    }
+
+    fun runMacro(macro: String?) {
+        runAsync { duet.sendCmd("M98 P$macro")}
     }
 }

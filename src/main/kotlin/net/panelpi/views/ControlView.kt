@@ -1,6 +1,7 @@
 package net.panelpi.views
 
 import javafx.beans.value.ObservableValue
+import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.Parent
@@ -63,6 +64,9 @@ class ControlView : View() {
     private val toolStandbyTemp: ComboBox<Int> by fxid()
 
     private val fanSliderBox: VBox by fxid()
+
+    private val selectedMacro: ComboBox<String> by fxid()
+    private val runSelectedMacro: Button by fxid()
 
     // Observable value for listening will need to be declared here, or else listener will get GCed and won't trigger event.
     private val coords = duetData.map { it.axes }
@@ -138,7 +142,7 @@ class ControlView : View() {
         temperatureHistogram.xAxis.animated = true
         temperatureHistogram.xAxis.isTickLabelsVisible = false
 
-        duetController.lowestTemperature.addListener { observable, oldValue, newValue ->  yAxis.isForceZeroInRange = false; yAxis.lowerBoundProperty().unbind(); yAxis.lowerBound = newValue.toDouble()}
+        duetController.lowestTemperature.addListener { _, _, newValue ->  yAxis.isForceZeroInRange = false; yAxis.lowerBoundProperty().unbind(); yAxis.lowerBound = newValue.toDouble()}
 
         bedHistory.node.styleClass.add("bedTemps")
         extruderHistory.node.styleClass.add("extruderTemps")
@@ -239,6 +243,10 @@ class ControlView : View() {
         retract.setOnAction {
             duetController.extrude(-feedAmountCB.value.toDouble(), feedRateCB.value)
         }
+
+        selectedMacro.items = duetController.macros;
+        runSelectedMacro.onAction = EventHandler { duetController.runMacro(selectedMacro.selectedItem) }
+
     }
 
     private fun bindHomeButton(homeButton: Button, homed: ObservableValue<Boolean>, axisName: String) {
