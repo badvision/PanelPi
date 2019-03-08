@@ -11,6 +11,7 @@ import java.io.File
 import java.io.InputStreamReader
 import java.io.Reader
 import java.net.Socket
+import java.net.SocketException
 import java.nio.charset.Charset
 import java.util.regex.Pattern
 
@@ -136,31 +137,44 @@ class UsbDuetIO : DuetIO() {
 }
 
 class TelnetDuetIO : DuetIO() {
-    private var socket: Socket
-    private var reader: BufferedReader
+    private var socket: Socket? = null
+    private var reader: BufferedReader? = null
 
     init {
         System.out.println("trying to connect...")
-        socket = Socket("192.168.1.69", 23)
-        reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+        reconnect()
         System.out.println("connected...")
     }
 
+    private fun reconnect() {
+        socket = Socket("192.168.1.69", 23)
+        reader = BufferedReader(InputStreamReader(socket?.getInputStream()))
+    }
+
     override fun halt() {
-        socket.close()
+        socket?.close()
     }
 
     override fun sendCmd(vararg lines: String, resultTimeout: Long): String {
+        if (socket == null || socket!!.isClosed) {
+            System.out.println("Detected dead socket, reconnecting")
+            reconnect()
+        }
         var buffer = ""
-        lines.forEach {
-            socket.outputStream.write("$it\n".toByteArray(Charset.forName("US-ASCII")))
+        try {
+            lines.forEach {
+                socket!!.outputStream.write("$it\n".toByteArray(Charset.forName("US-ASCII")))
 //            System.out.println(">>$it")
-            socket.outputStream.flush()
+                socket!!.outputStream.flush()
+            }
+        } catch (ex: SocketException) {
+            socket?.close()
+            throw ex
         }
 
         var wait = resultTimeout
         while (buffer == "ok" || buffer.contains("Begin file list") || buffer.contains("End file list") || buffer.isEmpty()) {
-            while (!reader.ready() && wait > 0) {
+            while (!reader!!.ready() && wait > 0) {
                 Thread.sleep(100)
                 wait -= 100
             }
@@ -168,7 +182,7 @@ class TelnetDuetIO : DuetIO() {
 //        System.out.println("Response timeout")
                 return ""
             } else {
-                buffer = reader.readLine()
+                buffer = reader!!.readLine()
             }
         }
 //        System.out.println("<<$buffer")
