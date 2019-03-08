@@ -25,8 +25,10 @@ class ControlView : View() {
     private val homeY: Button by fxid()
     private val homeZ: Button by fxid()
 
+    /*
     private val onButton: ToggleButton by fxid()
     private val offButton: ToggleButton by fxid()
+*/
 
     private val bedComp: Button by fxid()
     private val gridComp: Button by fxid()
@@ -84,6 +86,7 @@ class ControlView : View() {
         bindHomeButton(homeY, yHomed, "Y")
         bindHomeButton(homeZ, zHomed, "Z")
 
+        /*
         val toggleGroup = ToggleGroup()
         onButton.toggleGroup = toggleGroup
         offButton.toggleGroup = toggleGroup
@@ -97,7 +100,7 @@ class ControlView : View() {
             duetController.atxPower(false)
             it.consume()
             offButton.isSelected = duetData.value?.params?.atxPower == false
-        }
+        }*/
 
         bedComp.setOnAction {
             runAsync {
@@ -244,7 +247,7 @@ class ControlView : View() {
             duetController.extrude(-feedAmountCB.value.toDouble(), feedRateCB.value)
         }
 
-        selectedMacro.items = duetController.macros;
+        selectedMacro.items = duetController.macros
         runSelectedMacro.onAction = EventHandler { duetController.runMacro(selectedMacro.selectedItem) }
 
     }

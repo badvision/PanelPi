@@ -9,7 +9,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -175,21 +174,21 @@
         <GridPane hgap="10" vgap="20">
             <Label GridPane.halignment="RIGHT">Fan :</Label>
             <VBox fx:id="fanSliderBox" alignment="CENTER" GridPane.columnIndex="1" />
-            <Label GridPane.halignment="RIGHT" GridPane.rowIndex="1">Macro: </Label>
-            <HBox GridPane.rowIndex="1" GridPane.columnIndex="1">
-                   <ComboBox fx:id="selectedMacro"></ComboBox>
+            <HBox GridPane.rowIndex="1" GridPane.columnSpan="2" alignment="CENTER">
+                   <ComboBox fx:id="selectedMacro"/>
                     <Button fx:id="runSelectedMacro" styleClass="primary, small-button">
                         <graphic>
                             <MaterialDesignIconView glyphName="RUN" />
                         </graphic>
                     </Button>
             </HBox>
-
-            <Label style="visibility:hidden" GridPane.halignment="RIGHT" GridPane.rowIndex="2">ATX Power :</Label>
-            <HBox style="visibility:hidden" GridPane.columnIndex="1" GridPane.rowIndex="2">
+<!--
+            <Label style="visibility:hidden" maxHeight="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">ATX Power :</Label>
+            <HBox style="visibility:hidden" maxHeight="1" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <ToggleButton fx:id="onButton" focusTraversable="false" styleClass="on-off-button, success" GridPane.columnIndex="1">On</ToggleButton>
                 <ToggleButton fx:id="offButton" focusTraversable="false" styleClass="on-off-button, danger" GridPane.columnIndex="2">Off</ToggleButton>
             </HBox>
+-->
          <columnConstraints>
             <ColumnConstraints />
             <ColumnConstraints />

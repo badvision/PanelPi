@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane prefHeight="480.0" prefWidth="800.0" styleClass="window" stylesheets="@../css/bootstrap3.css, @../css/PanelPi.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="480.0" maxWidth="800.0" prefHeight="480.0" prefWidth="800.0"  styleClass="window" stylesheets="@../css/bootstrap3.css, @../css/PanelPi.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <BorderPane fx:id="centerPane" styleClass="contentArea">
          <stylesheets>
