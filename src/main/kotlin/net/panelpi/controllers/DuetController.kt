@@ -232,6 +232,6 @@ class DuetController : Controller() {
     }
 
     fun runMacro(macro: String?) {
-        runAsync { duet.sendCmd("M98 P$macro")}
+        runAsync { duet.sendCmd("M98 P/macros/$macro")}
     }
 }
